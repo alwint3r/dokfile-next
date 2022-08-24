@@ -13,7 +13,7 @@ class BuildImageOperation {
   }
 
   get target() {
-    return `${this.imageName}:${this.tag}`;
+    return this.tagOperation.fullTag;
   }
 }
 
