@@ -1,11 +1,13 @@
 import Dokfile from "../dokfile/dokfile";
 import BuildImageOperation from "./build-image.operation";
+import PushImageOperation from "./push-image.operation";
 import TagImageOperation from "./tag-image.operation";
 
 class Operations {
   constructor(
     public readonly build: BuildImageOperation[],
-    public readonly tag: TagImageOperation[]
+    public readonly tag: TagImageOperation[],
+    public readonly push: PushImageOperation[]
   ) {}
 }
 
@@ -13,6 +15,7 @@ class OperationsGenerator {
   static fromDokfile(dokfile: Dokfile, tag: string): Operations {
     const buildOps: BuildImageOperation[] = [];
     const tagOps: TagImageOperation[] = [];
+    const pushOps: PushImageOperation[] = [];
 
     const imageName = dokfile.getImageName();
     const remoteUrl = dokfile.getRemoteUrl();
@@ -37,29 +40,25 @@ class OperationsGenerator {
 
         if (dokfile.isRemoteUrlAvailable()) {
           tagOps.push(
-            new TagImageOperation(
-              imageName,
-              "latest",
-              latest,
-              remoteUrl
-            )
+            new TagImageOperation(imageName, "latest", latest, remoteUrl)
           );
         }
       }
 
       if (dokfile.isRemoteUrlAvailable()) {
-        tagOps.push(
-          new TagImageOperation(
-            imageName,
-            fullTag,
-            buildOp.tagOperation,
-            remoteUrl
-          )
+        const tag = new TagImageOperation(
+          imageName,
+          fullTag,
+          buildOp.tagOperation,
+          remoteUrl
         );
+        tagOps.push(tag);
+
+        pushOps.push(new PushImageOperation(tag));
       }
     }
 
-    return new Operations(buildOps, tagOps);
+    return new Operations(buildOps, tagOps, pushOps);
   }
 }
 
