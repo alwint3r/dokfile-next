@@ -39,9 +39,15 @@ class OperationsGenerator {
         tagOps.push(latest);
 
         if (dokfile.isRemoteUrlAvailable()) {
-          tagOps.push(
-            new TagImageOperation(imageName, "latest", latest, remoteUrl)
+          const tag = new TagImageOperation(
+            imageName,
+            "latest",
+            latest,
+            remoteUrl
           );
+          tagOps.push(tag);
+
+          pushOps.push(new PushImageOperation(tag));
         }
       }
 
