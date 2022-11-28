@@ -40,6 +40,13 @@ const schema = {
                 },
                 default: {},
               },
+              extraArgs: {
+                type: "object",
+                patternProperties: {
+                  ".*": { type: "string" },
+                },
+                default: {},
+              },
             },
           },
         },
@@ -65,7 +72,7 @@ class DokfileFactory {
       (profile) =>
         new BuildProfile(
           profile.id,
-          new Build(profile.build.dockerfile, profile.build.args),
+          new Build(profile.build.dockerfile, profile.build.args, profile.build.extraArgs),
           profile.asLatest
         )
     );
