@@ -1,11 +1,11 @@
 type BuildArgs = Record<string, string>;
-type ExtraArgs = Array<string>;
+type ExtraArgs = Record<string, string>;
 
 class Build {
   constructor(
     private dockerfile: string,
     private args: BuildArgs,
-    private extraArgs: ExtraArgs = []
+    private extraArgs: ExtraArgs = {}
   ) {
     if (!this.dockerfile) {
       this.dockerfile = "Dockerfile";
